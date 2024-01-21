@@ -51,13 +51,17 @@ header {
   padding: 5px;
 }
 
+.temp-adc button:hover {
+  background-color: rgb(68, 248, 77);
+}
+
 .temporizador {
   max-height: 150px;
   overflow-y: auto;
 }
 
 .temporizador::-webkit-scrollbar {
-  width: 12px;
+  width: 5px;
   /* width of the entire scrollbar */
 }
 

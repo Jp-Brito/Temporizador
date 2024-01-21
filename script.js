@@ -7,14 +7,11 @@ function criarcronometro() {
   nome = prompt('Qual nome? Ex: Megaterio') || 'Megaterio'
   horas = prompt('Quantas horas? Ex: 1') || 0
   minutos = prompt('Quantos minutos? Ex: 30') || 30
+  horas = horas >= 0 ? horas : 0
+  minutos = minutos - 1
   segundos = 59
-  itens.push({ 'nome': nome, 'horas': horas, 'minutos': minutos, 'segundos': segundos })
 
-  if (horas >= 0) {
-    minutos = minutos - 1
-  } else {
-    horas = 0
-  }
+  itens.push({ 'nome': nome, 'horas': horas, 'minutos': minutos, 'segundos': segundos, 'timer': new Date() })
 
   let div = document.createElement('div')
   div.innerHTML = `
@@ -37,33 +34,42 @@ let som = new Audio('alert.mp3')
 
 function tempo(index) {
 
-  if (itens[index].segundos == 0 && itens[index].minutos == 0 && itens[index].horas == 0) {
-    // clearInterval(intervalID);
-    // console.log('Acabou, play Sound')
+  let diferencaEmMilissegundos = new Date() - itens[index].timer;
+  let diferencaEmSegundos = Math.floor(diferencaEmMilissegundos / 1000);
+
+  let horas = itens[index].horas
+  let minutos = itens[index].minutos
+  let segundos = itens[index].segundos
+
+  if (diferencaEmSegundos >= 1) {
+    if (segundos == 0 && minutos == 0 && horas == 0) {
+      // clearInterval(intervalID);
+      // console.log('Acabou, play Sound')
+      let div = document.getElementById(`div${index}`)
+      if (div) {
+        som.play()
+        return
+      }
+    }
+
+    if (horas > 0 && minutos == 0 && segundos == 0) {
+      itens[index].horas = itens[index].horas - 1
+      document.getElementById(`h${index}`).innerText = itens[index].horas;
+      itens[index].minutos = 59
+      document.getElementById(`m${index}`).innerText = itens[index].minutos;
+    }
+
+    if (minutos > 0 && segundos == 0) {
+      itens[index].minutos = itens[index].minutos - 1
+      document.getElementById(`m${index}`).innerText = itens[index].minutos;
+      itens[index].segundos = 59
+    }
+
+    itens[index].segundos = itens[index].segundos - 1;
     let div = document.getElementById(`div${index}`)
     if (div) {
-      som.play()
-      return
+      document.getElementById(`s${index}`).innerText = itens[index].segundos;
     }
-  }
-
-  if (itens[index].horas > 0 && itens[index].minutos == 0 && itens[index].segundos == 0) {
-    itens[index].horas = itens[index].horas - 1
-    document.getElementById(`h${index}`).innerText = itens[index].horas;
-    itens[index].minutos = 59
-    document.getElementById(`m${index}`).innerText = itens[index].minutos;
-  }
-
-  if (itens[index].minutos > 0 && itens[index].segundos == 0) {
-    itens[index].minutos = itens[index].minutos - 1
-    document.getElementById(`m${index}`).innerText = itens[index].minutos;
-    itens[index].segundos = 59
-  }
-
-  itens[index].segundos = itens[index].segundos - 1;
-  let div = document.getElementById(`div${index}`)
-  if (div) {
-    document.getElementById(`s${index}`).innerText = itens[index].segundos;
   }
 }
 
